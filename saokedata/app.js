@@ -19,7 +19,7 @@ if (cluster.isMaster) {
     cluster.fork();
   });
 
-  addChunkJobsToQueue("../10trieu_2.csv").then(() => {
+  addChunkJobsToQueue("../1trieu.csv").then(() => {
     const endTime = Date.now();
     const totalTime = endTime - startTime;
     console.log(`Total import time: ${totalTime}ms`);

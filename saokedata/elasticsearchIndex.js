@@ -1,26 +1,27 @@
 const client = require("./elasticsearchClient");
 
-async function indexDataToElasticsearch(chunkData) {
-  const body = [];
+async function indexDataToElasticsearch(data) {
+  const indexName = "search";
 
-  for (const row of chunkData) {
-    body.push({ index: { _index: "keyword" } });
-    body.push(row);
-  }
-  console.log(body);
+  const body = data.flatMap((doc) => [{ index: { _index: indexName } }, doc]);
 
   try {
-    const { body: bulkResponse } = await client.bulk({ body });
-    if (bulkResponse?.errors) {
-      const erroredDocuments = bulkResponse.items.filter(
-        (item) => item.index && item.index.error
-      );
-      console.error("Bulk indexing errors:", erroredDocuments);
-    } else {
-      console.log("Data indexed into Elasticsearch successfully.");
+    const { body: bulkResponse } = await client.bulk({ refresh: true, body });
+
+    if (bulkResponse && bulkResponse.errors) {
+      const errorDetails = bulkResponse.items
+        .filter((item) => item.index && item.index.error)
+        .map((item) => item.index.error);
+      throw new Error(`Bulk index errors: ${JSON.stringify(errorDetails)}`);
     }
+
+    console.log(
+      `Successfully indexed ${data.length} documents into ${indexName}`
+    );
   } catch (error) {
-    console.error("Error indexing data to Elasticsearch:", error);
+    console.error(`Error indexing data to Elasticsearch: ${error.message}`);
+    console.error("Data that caused the error:", JSON.stringify(data, null, 2));
   }
 }
+
 module.exports = { indexDataToElasticsearch };

@@ -3,12 +3,10 @@ const redisConnection = require("./redisConnection");
 const fs = require("fs");
 const csv = require("csv-parser");
 
-// Tạo một hàng đợi import CSV
 const importQueue = new Queue("csvImportQueue", {
   connection: redisConnection,
 });
 
-// Thêm dữ liệu chia nhỏ vào hàng đợi
 async function addChunkJobsToQueue(fileName) {
   const CHUNK_SIZE = 250;
   let chunkData = [];

@@ -16,22 +16,22 @@ async function processChunk(chunkData) {
       let dateTimeParts = row[Object.keys(row)[0]].split("_");
       // console.log(row[Object.keys(row)[0]].split("_"));
       return {
-        // day: dateTimeParts[0],
-        // transactionId: dateTimeParts[1],
-        day: row["day"],
-        transactionId: row["transactionId"],
+        day: dateTimeParts[0],
+        transactionId: dateTimeParts[1],
+        // day: row["day"],
+        // transactionId: row["transactionId"],
         credit: row["credit"],
         detail: row["detail"],
-        VND: row["VND"],
-        // VND: formatCurrency(row["credit"]),
+        // VND: row["VND"],
+        VND: formatCurrency(row["credit"]),
       };
     });
-    // indexDataToElasticsearch(arrayToInsert);
-    let collection = dbConn.collection("saoke10trieu");
+    await indexDataToElasticsearch(arrayToInsert);
+    let collection = dbConn.collection("saokereal");
     const result = await collection.insertMany(arrayToInsert);
 
     if (result) {
-      // console.log("Chunk inserted into database successfully.");
+      console.log("Chunk inserted into database successfully.");
     }
 
     await client.close();

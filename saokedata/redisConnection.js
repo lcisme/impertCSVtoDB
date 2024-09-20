@@ -1,6 +1,5 @@
 const IORedis = require("ioredis");
 
-// Tạo kết nối Redis
 const redisConnection = new IORedis({
   host: "localhost",
   port: 6379,
