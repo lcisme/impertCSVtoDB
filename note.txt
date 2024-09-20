@@ -1,5 +1,0 @@
-bullmq
-
-
-date_time -> day + transationId
-them cot vietnamdong co . sau 3 so 0
